@@ -57,17 +57,14 @@ public class MainScript : MonoBehaviour
         {
             AddButton();
         }
+        gameLevelWindow.GetComponent<UnityEngine.UI.Text>().text = gameLevel.ToString();
     }
 
     public void OnClick()
     {
         if (gameWon)
         {
-            foreach (Button button in buttonsList)
-            {
-                Destroy(button);
-                buttonsList.Clear();
-            }
+            
             nbOfButtons += buttonIncrement;
             gameLevel++;
             CreateGame();
