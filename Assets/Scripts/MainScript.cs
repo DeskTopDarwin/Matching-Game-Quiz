@@ -7,7 +7,7 @@ public class MainScript : MonoBehaviour
 {
      
     public int buttonIncrement;
-    public float timerLenght = 5;
+    public float timerLenght = 8;
     public GameObject gameLevelWindow;
     public GameObject submitButton;
     public GameObject buttonPrefabResource;
@@ -19,7 +19,6 @@ public class MainScript : MonoBehaviour
     private int gameLevel = 1;
     private bool gameWon = true;
     private int nbOfButtons = 2;
-    public List<Button> buttonsList = new List<Button>();
      
 
 
@@ -32,7 +31,7 @@ public class MainScript : MonoBehaviour
     
     private void Awake()
     {
-        AddButton();
+        CreateGame();
     }
     
     // Update is called once per frame
@@ -41,34 +40,77 @@ public class MainScript : MonoBehaviour
         
     }
     
+    private void DestroyChildren()
+    {
+        int childrenGreen = greenZoneContent.transform.childCount;
+        if (childrenGreen > 0)
+        {
+            for (int i = 0; i < childrenGreen; ++i)
+                Destroy(greenZoneContent.transform.GetChild(i).gameObject);
+        }
+
+
+        int childrenRed = greenZoneContent.transform.childCount;
+        if (childrenRed > 0)
+        {
+            for (int i = 0; i < childrenRed; ++i)
+                Destroy(greenZoneContent.transform.GetChild(i).gameObject);
+        }
+        
+    }
+
+    //private void addListenerToButton()
+    //{
+    //    int childrenGreen = greenZoneContent.transform.childCount;
+    //    if (childrenGreen > 0)
+    //    {
+    //        for (int i = 0; i < childrenGreen; ++i)
+    //            greenZoneContent.GetComponent<Button>().onClick.AddListener(ChangeParent);
+    //    }
+    //
+    //    int childrenRed = greenZoneContent.transform.childCount;
+    //    if (childrenRed > 0)
+    //    {
+    //        for (int i = 0; i < childrenRed; ++i)
+    //            greenZoneContent.GetComponent<Button>().onClick.AddListener(ChangeParent);
+    //    }
+    //}
+
     
     private void AddButton()
     {
         GameObject newButton = Instantiate(buttonPrefabResource, new Vector3(greenZoneContent.transform.position.x, greenZoneContent.transform.position.y, greenZoneContent.transform.position.z),Quaternion.identity);
         newButton.transform.parent = greenZoneContent.transform;
-        Button button = GetComponent<Button>();
-        buttonsList.Add(button);
+        //GetComponent<Button>().onClick.AddListener(ChangeParent);
     }
+    public void ChangeParent()
+    {
 
+    }
 
     private void CreateGame()
     {
+        if (gameLevel >= 1)
+        {
+            DestroyChildren();
+        }
+
         for (int i = 0; i < nbOfButtons; i++)
         {
             AddButton();
+            //addListenerToButton();
         }
         gameLevelWindow.GetComponent<UnityEngine.UI.Text>().text = gameLevel.ToString();
+        timerEnd = Time.time + timerLenght;
     }
 
     public void OnClick()
     {
-        if (gameWon)
+        if (gameWon && Time.time >= timerEnd)
         {
-            
             nbOfButtons += buttonIncrement;
-            gameLevel++;
             CreateGame();
-
+            gameLevel++;
         }
     }
 
